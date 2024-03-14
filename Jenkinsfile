@@ -1,26 +1,22 @@
-// This is a Jenkinsfile. It is a script that Jenkins will run when a build is triggered.
 pipeline {
-    // Telling Jenkins to run the pipeline on any available agent.
-    agent any
+    agent {
+        docker {
+            // Use the official Node.js image from Docker Hub
+            image 'node:latest'
+            // Set up other Docker-related options if needed
+            // For example, you can specify additional volumes or environment variables
+            // Additional options can be added as needed
+            args '-u root:root' // (optional) Run Docker container as root user
+        }
+    }
 
-    // Setting environment variables for the build.
-    // environment {
-    //     MONGODB_URI = credentials('mongodb-uri')
-    //     TOKEN_KEY = credentials('token-key')
-    //     EMAIL = credentials('email')
-    //     PASSWORD = credentials('password')
-    // }
-
-    // This is the pipeline. It is a series of stages that Jenkins will run.
     stages {
-        // This state is telling Jenkins to checkout the source code from the source control management system.
         stage('Checkout') {
             steps {
                 checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/animesh0406/project_Dev.git']])
             }
         }
         
-        // This stage is telling Jenkins to run the tests in the client directory.
         stage('Client Tests') {
             steps {
                 dir('client') {
@@ -30,7 +26,6 @@ pipeline {
             }
         }
         
-        // This stage is telling Jenkins to run the tests in the server directory.
         stage('Server Tests') {
             steps {
                 dir('server') {
@@ -44,7 +39,6 @@ pipeline {
             }
         }
         
-        // This stage is telling Jenkins to build the images for the client and server.
         stage('Build Images') {
             steps {
                 sh 'docker build -t animesh0406/productivity-app:client-latest client'
@@ -52,7 +46,6 @@ pipeline {
             }
         }
         
-        // This stage is telling Jenkins to push the images to DockerHub.
         stage('Push Images to DockerHub') {
             steps {
                 withCredentials([usernamePassword(credentialsId: '3bda2239-38ef-4f58-985c-fce764f0f67a', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
