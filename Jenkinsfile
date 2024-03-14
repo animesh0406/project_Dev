@@ -1,5 +1,14 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            // Use the official Node.js image from Docker Hub
+            image 'node:latest'
+            // Set up other Docker-related options if needed
+            // For example, you can specify additional volumes or environment variables
+            // Additional options can be added as needed
+            args '-u root:root' // (optional) Run Docker container as root user
+        }
+    }
 
     stages {
         stage('Checkout') {
