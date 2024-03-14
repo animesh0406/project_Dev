@@ -1,13 +1,9 @@
 pipeline {
-    agent {
-        docker {
-            // Use the official Node.js image from Docker Hub
-            image 'node:latest'
-            // Set up other Docker-related options if needed
-            // For example, you can specify additional volumes or environment variables
-            // Additional options can be added as needed
-            args '-u root:root' // (optional) Run Docker container as root user
-        }
+    agent any
+
+    tools {
+        // Define the Node.js tool installation
+        nodejs 'node'
     }
 
     stages {
@@ -21,7 +17,7 @@ pipeline {
             steps {
                 dir('client') {
                     sh 'npm install'
-                    //sh 'npm test'
+                    // Add your npm test step here
                 }
             }
         }
@@ -30,11 +26,7 @@ pipeline {
             steps {
                 dir('server') {
                     sh 'npm install'
-                    // sh 'export MONGODB_URI=$MONGODB_URI'
-                    // sh 'export TOKEN_KEY=$TOKEN_KEY'
-                    // sh 'export EMAIL=$EMAIL'
-                    // sh 'export PASSWORD=$PASSWORD'
-                    // sh 'npm test'
+                    // Add your npm test step here
                 }
             }
         }
