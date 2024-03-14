@@ -1,5 +1,14 @@
 pipeline {
-    agent {
+    agent any
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/animesh0406/project_Dev.git']])
+            }
+        }
+        
+        stage('Client Tests') {
+              agent{
         docker {
             // Use the official Node.js image from Docker Hub
             image 'node:latest'
@@ -10,14 +19,6 @@ pipeline {
         }
     }
 
-    stages {
-        stage('Checkout') {
-            steps {
-                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/animesh0406/project_Dev.git']])
-            }
-        }
-        
-        stage('Client Tests') {
             steps {
                 dir('client') {
                     sh 'npm install'
@@ -27,6 +28,16 @@ pipeline {
         }
         
         stage('Server Tests') {
+               agent{
+        docker {
+            // Use the official Node.js image from Docker Hub
+            image 'node:latest'
+            // Set up other Docker-related options if needed
+            // For example, you can specify additional volumes or environment variables
+            // Additional options can be added as needed
+            args '-u root:root' // (optional) Run Docker container as root user
+        }
+    }
             steps {
                 dir('server') {
                     sh 'npm install'
