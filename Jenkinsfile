@@ -16,7 +16,7 @@ pipeline {
         // This state is telling Jenkins to checkout the source code from the source control management system.
         stage('Checkout') {
             steps {
-                checkout scm
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/animesh0406/project_Dev.git']])
             }
         }
         
